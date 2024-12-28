@@ -142,6 +142,84 @@ INSERT INTO PAYMENT (payment_id, order_id,  payment_status_id, payment_status,am
 VALUES (3,3,3,'unpaid',699.99);
 
 
+--join
+--  syntax :SELECT * FROM TABLEA AS T1 INNER JOIN TABLEB AS T2 ON T1.id = T2.id;
+-- as is optional 
+--CUSTOMER AND ORDERS(LEFT JOIN)
+
+
+-- ORDERSTATUS AND ORDER (INNER JOIN )
+SELECT o.order_date , o.amount,o.customer_id,o.order_status_id,os.order_status
+FROM ORDERS  o 
+INNER JOIN ORDER_STATUS  os
+ON o.order_status_id = os.order_status_id;
+
+
+-- view :logical table it doesnot store a actual data  and its types are normal and materalized (it creates a virtual table which fetches the data from the table and when we create the view the data are displayed from the materalized view rather than directly from a table while creating a view)
+
+CREATE VIEW customer_order_view AS
+SELECT c.customer_id,c.first_name,c.last_name,c.country,c.phone_number,o.quantity,o.amount,o.order_date ,os.order_status
+FROM CUSTOMER c
+INNER JOIN ORDERS o
+ON c.customer_id = o.customer_id
+INNER JOIN ORDER_STATUS os
+ON o.order_status_id = os.order_status_id;
+
+SELECT * FROM customer_order_view;
+--materatized view 
+
+CREATE MATERIALIZED VIEW M_customer_order_view AS
+SELECT c.customer_id,c.first_name,c.last_name,c.country,c.phone_number,o.quantity,o.amount,o.order_date,os.order_status
+FROM CUSTOMER c
+INNER JOIN ORDERS o
+ON c.customer_id = o.customer_id
+INNER JOIN ORDER_STATUS os
+ON o.order_status_id = os.order_status_id;
+
+SELECT * FROM M_customer_order_view;
+
+-- SELECT LOG_MODE FROM V$DATABASE;
+
+-- SHUTDOWN IMMEDIATE ;
+-- STARTUP MOUNT;
+-- ALTER DATABASE ARCHIVELOG;
+-- ALTER DATABASE OPEN;
+
+--update order 
+UPDATE ORDERS 
+SET amount = 69999.99 
+WHERE order_id = 3;
+
+--STANDARD  SEQUNECE OF QUERY CLAUSE : WHERE ,GROUP BY ,HAVING AND ORDER BY
+--GROUP BY
+SELECT COUNTRY ,COUNT(*) 
+FROM CUSTOMER
+GROUP BY COUNTRY
+HAVING COUNT(*) > 1
+ORDER BY COUNTRY DESC;
+
+--DISTINCT IS USED TO REMOVE THE DUPLICATE VALUES FROM THE TABLE
+SELECT DISTINCT COUNTRY
+FROM CUSTOMER;
+
+--SUBQUERY IS USED WHEN WE DONT KNOW THE CONDITION OF THE MAIN QUERY 
+SELECT order_date,MAX (amount) 
+FROM ORDERS 
+WHERE amount <( SELECT MAX(amount) FROM ORDERS)
+GROUP BY order_date;
+
+SELECT GLOBAL_NAME FROM GLOBAL_NAME;
+SELECT INSTANCE_NAME FROM v$instance;
+
+
+
+
+
+
+
+
+
+
 
 
 
