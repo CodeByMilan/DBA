@@ -211,15 +211,78 @@ GROUP BY order_date;
 SELECT GLOBAL_NAME FROM GLOBAL_NAME;
 SELECT INSTANCE_NAME FROM v$instance;
 
+--create index _
+CREATE INDEX idx_customer_id on ORDERS (customer_id)
 
+--unique index 
+SELECT * FROM CUSTOMER;
 
+ALTER TABLE CUSTOMER 
+ADD email VARCHAR(25);
 
+UPDATE CUSTOMER
+SET email = 'john@gmail.com'
+WHERE customer_id = 1;
 
+UPDATE CUSTOMER
+SET email = 'jane@gmail.com'
+WHERE customer_id = 2;
 
+UPDATE CUSTOMER
+SET email = 'rahul@gmail.com'
+WHERE customer_id = 3;
 
+UPDATE CUSTOMER
+SET email = 'sharma@gmail.com'
+WHERE customer_id = 4;
 
+UPDATE CUSTOMER
+SET email = 'sharmarahul@gmail.com'
+WHERE customer_id = 5;
 
+CREATE UNIQUE INDEX idx_unique_email ON CUSTOMER (email);
 
+--view index 
+SELECT index_name 
+FROM user_indexes
+WHERE table_name = 'CUSTOMER';
 
+SELECT SYS_CONTEXT ('USERENV', 'CURRENT_SCHEMA') AS schema_name FROM DUAL;
 
+--create synonym 
+CREATE SYNONYM my_orders  FOR ORDERS;
 
+--view synonym
+SELECT SYNONYM_NAME ,TABLE_OWNER , TABLE_NAME,DB_LINK
+FROM USER_SYNONYMS;
+
+--check specific synonym
+SELECT SYNONYM_NAME ,TABLE_OWNER , TABLE_NAME
+FROM ALL_SYNONYMS
+WHERE SYNONYM_NAME = 'MY_ORDERS';
+
+select * from my_orders;
+--drop Synonum
+DROP SYNONYM my_orders;
+
+--sequence
+CREATE SEQUENCE customer_sequence 
+START WITH 7
+INCREMENT BY 2
+NOCYCLE -- Prevents the sequence from cycling back to its minimum value after reaching its maximum value.
+CACHE 10; --keep 10 values in memory
+
+--getting current value in sequence 
+SELECT customer_sequence.CURRVAL FROM DUAL;
+SELECT customer_sequence.NEXTVAL FROM DUAL;
+
+--insert into table using sequence
+SELECT * FROM CUSTOMER;
+INSERT INTO CUSTOMER (customer_id, first_name,last_name ,phone_number , country , email)
+VALUES (customer_sequence.NEXTVAL,'hari','Sharma','1234567890','Singapore','hari@gmail.com');
+
+INSERT INTO CUSTOMER (customer_id, first_name,last_name ,phone_number , country , email)
+VALUES (customer_sequence.NEXTVAL,'sita','Sharma','1234567840','Singapore','sita@gmail.com');
+
+INSERT INTO CUSTOMER (customer_id, first_name,last_name ,phone_number , country , email)
+VALUES (customer_sequence.NEXTVAL,'gita','Sharma','1234567890','Singapore','gita6@gmail.com');
